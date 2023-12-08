@@ -51,26 +51,7 @@ impl ErrorStrings {
     }
 }
 
-// impl<F> RustProcedureRefMut<HashMap<&str, Value>, F>
-// for TypedWrapper<'_, HashMap<&str, Value>, Value>
-//     where
-//         F: FnOnce(&mut HashMap<&str, Value>) -> VMResult<Value>,
-// {
-//     fn apply_ref_mut(&mut self, fn_name: &str, fun: F) -> VMResult<Value> {
-//         try_inner_hash_map_mut!(fn_name, self.0, arg, fun(arg))
-//     }
-// }
-//
-// impl<F> RustProcedure<HashMap<&str, Value>, F>
-// for TypedWrapper<'_, HashMap<&str, Value>, Value>
-//     where
-//         F: FnOnce(HashMap<&str, Value>) -> VMResult<Value>,
-// {
-//     fn apply(&self, fn_name: &str, fun: F) -> VMResult<Value> {
-//         try_inner_hash_map!(fn_name, self.0, arg, fun(arg.clone()))
-//     }
-// }
-
+//TODO PC worry about inlining!
 /// Simple wrapper so the macro can infer the type of the Value at runtime to see if the value
 /// provided to the lisp environment was the type of value the rust function expected.
 pub struct TypedWrapper<'a, T: ?Sized + 'a, U>(&'a U, PhantomData<T>);
@@ -93,8 +74,15 @@ impl<'a, T: ?Sized + 'a, U> TypedWrapper<'a, T, U> {
     }
 }
 
-pub trait TryFromSlosh<T> {
-    fn try_from_slosh(&self, vm: &mut SloshVm, val: &Value) -> VMResult<T>;
+
+//TODO PC trybuild!!
+
+// still struggling w/ compiler about how TryFromSlosh<&str> is going to work.
+// since the Value enum is not actually the "actual" thing that owns the data we do not necessarily
+// need the approach in sl-sh where a closure was used to prevent needing to return the inner data
+// from the Expression enum... but it does need to work!
+pub trait TryFromSlosh<'a, T> where T: 'a {
+    fn try_from_slosh(&'a self, vm: &mut SloshVm, val: &Value) -> VMResult<T>;
 }
 
 pub trait TryIntoSlosh {
@@ -107,12 +95,51 @@ impl TryIntoSlosh for String {
     }
 }
 
-impl TryFromSlosh<String> for TypedWrapper<'_, String, Value> {
+impl TryFromSlosh<'_, String> for TypedWrapper<'_, String, Value> {
     fn try_from_slosh(&self, vm: &mut SloshVm, val: &Value) -> VMResult<String> {
         vm_to_string(vm, val)
     }
 }
 
+impl<'b> TryFromSlosh<'b, &'b str> for TypedWrapper<'b, &'b str, Value> {
+    fn try_from_slosh(&'b self, vm: &'b mut SloshVm, val: &'b Value) -> VMResult<&'b str> {
+        vm_to_string_ref(vm, val)
+    }
+}
+
+//TODO PC do as a macro
+fn vm_to_string_ref<'a>(vm: &mut SloshVm, val: &'a Value) -> VMResult<&'a str> {
+    match val {
+        Value::String(h) => {
+            Ok(vm.get_string(*h))
+        }
+        Value::CodePoint(char) => {
+            let s = *char;
+            Ok(s.encode_utf8(&mut [0; 4]))
+        }
+        Value::CharCluster(l, c) => {
+            Ok(&format!("{}", String::from_utf8_lossy(&c[0..*l as usize])))
+        }
+        Value::CharClusterLong(h) => {
+            Ok(vm.get_string(*h))
+        }
+        Value::Symbol(i) => {
+            Ok(vm.get_interned(*i))
+        },
+        Value::Keyword(i) => {
+            Ok(vm.get_interned(*i))
+        },
+        Value::StringConst(i) => {
+            Ok(vm.get_interned(*i))
+        },
+        _ => {
+            Err(VMError::new("conv", "Wrong type, expected something that can be cast to a string."))
+        }
+    }
+}
+
+
+//TODO PC do as a macro
 fn vm_to_string(vm: &mut SloshVm, val: &Value) -> VMResult<String> {
     match val {
         Value::String(h) => {
@@ -148,32 +175,8 @@ mod test {
     use compile_state::state::new_slosh_vm;
     use super::*;
 
-
-    fn str_trim(vm: &mut SloshVm, registers: &[Value]) -> VMResult<String> {
-        let mut i = registers.iter();
-        let right = vm.intern("right");
-        let left = vm.intern("left");
-        match (i.next(), i.next(), i.next()) {
-            (Some(string), None, None) => {
-                let string = string.get_string(vm)?.trim().to_string();
-                Ok(string)
-            }
-            (Some(string), Some(Value::Keyword(i)), None) if *i == right => {
-                let string = string.get_string(vm)?.trim_end().to_string();
-                Ok(string)
-            }
-            (Some(string), Some(Value::Keyword(i)), None) if *i == left => {
-                let string = string.get_string(vm)?.trim_start().to_string();
-                Ok(string)
-            }
-            _ => Err(VMError::new_vm(
-                "str-trim: takes one argument with optional left/right keyword".to_string(),
-            )),
-        }
-    }
-
     #[test]
-    fn try_me() {
+    fn try_str_trim() {
         let mut vm = new_slosh_vm();
         let to_trim = " hello world ";
         let val = str_trim_test(&mut vm, to_trim.to_string()).unwrap();
