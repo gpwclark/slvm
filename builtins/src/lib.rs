@@ -8,8 +8,6 @@ pub mod conversions;
 pub mod io;
 pub mod print;
 pub mod string;
-mod types;
-
 fn get_prop(vm: &mut SloshVm, registers: &[Value]) -> VMResult<Value> {
     if registers.len() != 2 {
         return Err(VMError::new_vm(
