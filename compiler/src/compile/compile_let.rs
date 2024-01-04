@@ -2,9 +2,9 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use slvm::error::*;
-use slvm::opcodes::*;
+use core_types::opcodes::*;
 use slvm::value::*;
-use slvm::Interned;
+use core_types::interner::Interned;
 
 use crate::compile::destructure::{
     resolve_destruct_containers, setup_dbg, DestructState, DestructType,

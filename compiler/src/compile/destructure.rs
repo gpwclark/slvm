@@ -1,11 +1,12 @@
 use slvm::error::*;
-use slvm::opcodes::*;
+use core_types::opcodes::*;
 use slvm::value::*;
-use slvm::{Handle, Interned};
+use core_types::handle::Handle;
 use std::collections::HashMap;
 
 use crate::{compile, mkconst, SloshVm};
 use compile_state::state::*;
+use core_types::interner::Interned;
 
 pub enum Register {
     Named(Interned, u16),

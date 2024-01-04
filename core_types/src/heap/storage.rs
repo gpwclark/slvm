@@ -4,7 +4,7 @@ use crate::bits::{
 use crate::{clear_bit, is_bit_set, set_bit};
 
 #[derive(Debug)]
-pub(super) struct Storage<T: Clone> {
+pub struct Storage<T: Clone> {
     flags: Vec<u8>,
     vals: Vec<T>,
     capacity: usize,

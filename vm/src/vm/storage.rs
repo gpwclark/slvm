@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 use std::sync::Arc;
+use core_types::interner::Interned;
 
 use crate::chunk::*;
 use crate::error::*;
 use crate::heap::*;
-use crate::interner::*;
 use crate::value::*;
 use crate::GVm;
 

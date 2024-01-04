@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 slvm = { path = "../vm" }
+core_types = { workspace = true }

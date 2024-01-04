@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use slvm::chunk::*;
 use slvm::error::*;
-use slvm::opcodes::*;
+use core_types::opcodes::*;
 use slvm::vm::*;
 
 fn main() -> Result<(), VMError> {

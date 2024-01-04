@@ -11,3 +11,4 @@ gc = []
 nohelmet = []
 
 [dependencies]
+core_types = { workspace = true }

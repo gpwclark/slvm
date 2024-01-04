@@ -3,11 +3,11 @@
 
 use slvm::chunk::*;
 use slvm::error::*;
-use slvm::opcodes::*;
+use core_types::opcodes::*;
 use slvm::value::*;
 use slvm::vm::*;
 use slvm::FxHasher;
-use slvm::Handle;
+use core_types::handle::Handle;
 use std::collections::HashSet;
 use std::hash::Hasher;
 use std::sync::Arc;

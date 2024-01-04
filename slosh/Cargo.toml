@@ -15,6 +15,7 @@ compile_state = { path = "../compile_state" }
 shell = { path = "../shell" }
 unicode-width = "0.1"
 glob = "0.3"
+core_types = { workspace = true }
 
 [build-dependencies]
 chrono = "0.4.7"

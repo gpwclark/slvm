@@ -1,17 +1,13 @@
-pub mod opcodes;
-pub use crate::opcodes::*;
+pub use core_types::opcodes::*;
 
-pub mod error;
 pub use crate::error::*;
 
 pub mod value;
 pub use crate::value::*;
 
-pub mod heap;
-pub use crate::heap::*;
+pub use core_types::heap::*;
 
-pub mod chunk;
-pub use crate::chunk::*;
+pub use core_types::chunk::*;
 
 pub mod vm;
 pub use crate::vm::*;

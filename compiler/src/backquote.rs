@@ -1,5 +1,5 @@
 use slvm::error::*;
-use slvm::interner::Interned;
+use core_types::interner::Interned;
 use slvm::value::*;
 
 use crate::compile::*;
@@ -305,7 +305,7 @@ pub fn backquote(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{ReadError, Reader};
+    use crate::{Reader, ReadError};
     use slvm::RET;
     use std::sync::Arc;
 

@@ -7,7 +7,7 @@ use std::fs::create_dir_all;
 use std::io::{BufRead, ErrorKind};
 use std::sync::Arc;
 
-use slvm::opcodes::*;
+use core_types::opcodes::*;
 
 use compile_state::state::*;
 use sl_compiler::compile::*;

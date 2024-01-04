@@ -465,7 +465,7 @@ impl<ENV> GVm<ENV> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::opcodes::*;
+    use core_types::opcodes::*;
 
     fn get_int(_vm: &Vm, val: &Value) -> VMResult<i64> {
         if let Value::Int(i) = val {

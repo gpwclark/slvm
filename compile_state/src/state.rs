@@ -1,9 +1,9 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
+use core_types::interner::Interned;
 
 use slvm::chunk::*;
-use slvm::interner::*;
 use slvm::value::*;
 use slvm::vm::*;
 

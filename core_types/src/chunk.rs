@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use crate::error::*;
-use crate::interner::Interned;
+use core_types::interner::Interned;
 use crate::opcodes::*;
 use crate::value::*;
 

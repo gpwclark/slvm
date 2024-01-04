@@ -1,4 +1,4 @@
-use crate::opcodes::*;
+use core_types::opcodes::*;
 use crate::{
     from_i56, CallFrame, Chunk, Continuation, Error, GVm, VMError, VMErrorObj, VMResult, Value,
     STACK_CAP,
